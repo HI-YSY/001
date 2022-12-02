@@ -6,11 +6,11 @@ public class City extends LitePalSupport {
 
     private int id;
 
-    private String cityName;
+    private String cityName;//市
 
-    private int cityCode;
+    private int cityCode;//市的代号
 
-    private int provinceId;
+    private int provinceId;//属于某省份的id
 
     public int getId() {
         return id;

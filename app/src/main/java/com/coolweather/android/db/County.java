@@ -6,11 +6,11 @@ public class County extends LitePalSupport {
 
     private int id;
 
-    private String countyName;
+    private String countyName;//县
 
-    private String weatherId;
+    private String weatherId;//县的id
 
-    private int cityId;
+    private int cityId;//属于某市的id
 
     public int getId() {
         return id;

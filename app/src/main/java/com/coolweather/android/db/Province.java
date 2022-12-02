@@ -6,9 +6,9 @@ public class Province extends LitePalSupport {
 
     private int id;
 
-    private String provinceName;
+    private String provinceName;//省
 
-    private int provinceCode;
+    private int provinceCode;//省代号
 
     public int getId() {
         return id;
