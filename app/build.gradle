@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.litepal.guolindev:core:3.2.3'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
-
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.1'
+//    implementation 'joda-time:joda-time:2.10'//时间框架
+//    implementation files('libs/AMap_Location_V4.0.1_20180426.jar')//高德定位
+//    implementation files('libs/sdk_HeWeather_Public_Android_V2.4.jar')//和风天气SDK
 }
