@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,67 +112,55 @@ public class ChooseAreaFragment extends Fragment {
         return view;
     }
 
-
-    //    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//      super.onActivityCreated(savedInstanceState);
-//    }
-//    弃用了。用下面的替换
     @Override
-    public void onAttach(@NonNull @NotNull Context context) {
-        super.onAttach(context);
-        //requireActivity() 返回的是宿主activity
-        requireActivity().getLifecycle().addObserver(new LifecycleEventObserver() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onStateChanged(@NonNull @NotNull LifecycleOwner source, @NonNull @NotNull Lifecycle.Event event) {
-                if (event.getTargetState() == Lifecycle.State.CREATED) {
-                    /*
-                    在这里任你飞翔
-                   LitePal.deleteAll(Province.class);//测试用；删除这个表全部数据，预防数据库数据出错
-                   LitePal.deleteAll(County.class);
-                   LitePal.deleteAll(City.class);
-                     */
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            if (currentLevel == LEVEL_PROVINCE) {
-                                selectedProvince = provinceList.get(position);
-                                queryCities();
-                            } else if (currentLevel == LEVEL_CITY) {
-                                selectedCity = cityList.get(position);
-                                queryCounties();
-                            }else if (currentLevel==LEVEL_COUNTY){
-                                String weatherId = countyList.get(position).getWeatherId();
-//                                Toast.makeText(context, weatherId, Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                                intent.putExtra("weather_id",weatherId);
-                                startActivity(intent);
-                                requireActivity().finish();
-                            }
-                        }
-                    });
-                    backButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (currentLevel == LEVEL_COUNTY) {
-                                queryCities();
-                            } else if (currentLevel == LEVEL_CITY) {
-                                queryProvinces();
-                            }
-                        }
-                    });
-                    queryProvinces();//如果第一次加载，啥也没有，就直接跳转到这
-                    getLifecycle().removeObserver(this);  //这里是删除观察者
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (currentLevel == LEVEL_PROVINCE) {
+                    selectedProvince = provinceList.get(position);
+                    queryCities();
+                } else if (currentLevel == LEVEL_CITY) {
+                    selectedCity = cityList.get(position);
+                    queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        requireActivity().finish();
+
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);//刷新
+//                        Toast.makeText(activity, "刷新", Toast.LENGTH_SHORT).show();
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentLevel == LEVEL_COUNTY) {
+                    queryCities();
+                } else if (currentLevel == LEVEL_CITY) {
+                    queryProvinces();
+                }
+            }
+        });
+        queryProvinces();//如果第一次加载，啥也没有，就直接跳转到这
     }
+
 
     /**
      * 查询全国所有的省，优先从数据库查询；没有就服务器查询。503
      */
     private void queryProvinces() {
         titleText.setText("中国");
+
         backButton.setVisibility(View.GONE);//隐藏返回按钮
         provinceList = LitePal.findAll(Province.class);//查询省的数据
         if (provinceList.size() > 0) {
@@ -192,6 +181,7 @@ public class ChooseAreaFragment extends Fragment {
      * 查询选中省份的所有市，优先从数据库查询；没有就服务器查询。504
      */
     private void queryCities() {
+
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);//显示返回按钮
         //多条件查询 LitePal.where("name = ?", "张三").find( User.class);
@@ -215,6 +205,9 @@ public class ChooseAreaFragment extends Fragment {
      * 查询选中市的所有县，优先从数据库查询；没有就服务器查询。505
      */
     private void queryCounties() {
+//                LitePal.deleteAll(Province.class);
+//        LitePal.deleteAll(County.class);
+//        LitePal.deleteAll(City.class);
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
         countyList = LitePal.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);

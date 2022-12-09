@@ -1,19 +1,22 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <style name="Theme.CoolWeather" parent="Theme.AppCompat.Light.NoActionBar">
         <!--        &lt;!&ndash; Primary brand color. &ndash;&gt;-->
         <item name="colorPrimary">#6C6A6A</item> <!-- 顶栏背景 -->
         <item name="colorPrimaryVariant">#000000</item> <!-- 状态栏 -->
         <item name="colorAccent">#03A9F4</item><!-- 悬浮按钮等颜色-->
         <item name="overlapAnchor">false</item><!-- 是用来修改 Menu 悬浮位置，默认为TRUE,当为 FALSE 的时候则不遮挡 Toolbar。-->
-        <item name="colorOnPrimary">@color/white</item>
+        <!-- Primary brand color. -->
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        Status bar color.
+        <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="android:forceDarkAllowed">true</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="FruitActivityTheme" parent="Theme.CoolWeather"/>
 </resources>
